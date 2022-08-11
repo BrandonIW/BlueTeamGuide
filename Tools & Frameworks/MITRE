@@ -1,0 +1,16 @@
+-> ATT&CK Framework:
+This is a KB of adversary tactics and techniques that are based on real-world observations. This is documenting Tactics, Techniques and Procedures that APTs employ. They employ a matrix is various tactics i.e. Initial Access, Reconassiance, Defence Evasion etc. (https://attack.mitre.org/#) each of which having various techniques i.e. active scanning, phishing, create accounts etc. 
+
+This matrix provides a nice way to search for various APTs, the attacks they employ, software they use, groups they're associated with etc. 
+
+Tactic - > Persistence
+Technique - > Scheduled Job/Task
+
+-> CAR (https://car.mitre.org/):
+Leverages ATT&CK to develop analytics to detect the adversary behaviour. Provides information of ID'ing adversary behaviours & the creation of te analyic to detect and identify the behaviour. (https://car.mitre.org/analytics/CAR-2020-09-001/)
+
+-> MITRE Engage Framework (https://engage.mitre.org/matrix/)
+A framework for planning and discussing adversary engagement operations that empowers you to engage your adversaries. W/ things like "Cyber denial" we want to prevent the adversary's ability to conduct their operations, and with "Cyber Deception" we intentially plant artifiacts to waste time, mislead, gather info. 
+
+-> MITRE D3FEND Framework (https://d3fend.mitre.org/)
+A knowledge matrix of various cybersec. countermeasures, such as app. hardening, file analysis, network traffic analysis etc. You're given infomration about what the technique is, how it works, and ways to implement it. 
