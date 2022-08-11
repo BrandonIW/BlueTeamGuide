@@ -14,3 +14,6 @@ A framework for planning and discussing adversary engagement operations that emp
 
 -> MITRE D3FEND Framework (https://d3fend.mitre.org/)
 A knowledge matrix of various cybersec. countermeasures, such as app. hardening, file analysis, network traffic analysis etc. You're given infomration about what the technique is, how it works, and ways to implement it. 
+
+-> Adversary Emulation Library (https://github.com/center-for-threat-informed-defense/adversary_emulation_library)
+Guides on how to mimic the specified threat group. 
