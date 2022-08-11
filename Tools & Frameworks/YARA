@@ -1,0 +1,113 @@
+Yet Another Ridiculous Acronym
+
+#----Overview
+Yara is a pattern matching swiss army knife, pattern matching based on binary and textual patterns, including hex and strings w/i a file. Rules are written to determine if a file is malicious or not based on the patterns it presents and recognizes. 
+
+#---Installation
+sudo apt update -y && sudo apt upgrade -y
+sudo apt install yara
+
+-or-
+
+sudo apt update -y && sudo apt upgrade -y
+sudo apt install automake libtool make gcc flex bison libssl-dev libjansson-dev libmagic-dev pkg-config
+wget https://github.com/VirusTotal/yara/archive/<latest tar.gz file>
+tar -zxvf v4.0.2.tar.gz
+cd yara-4.0.2
+chmod +x configure
+./configure
+chmod +x bootstrap.sh
+./bootstrap.sh
+make
+sudo make install
+cd yara-4.0.2
+chmod +x configure
+./configure
+chmod +x bootstrap.sh
+./bootstrap.sh
+make
+sudo make install
+
+
+#----YARA Rules
+A YARA command requires two arguments to be valid: 
+1) The rule file we create
+2) The name of the file, directory or process ID to use the rule on
+
+For ex: yara myyararule.yar directory
+
+Each rule itself must be comprised of: 1) The name of the rule 2) The condition it is checking for. An example yara rule is as follows:
+rule examplerule {
+  condition: true
+}
+
+Name of the rule = Examplerule
+Condition = Condition: true (checks to see if the file exists)
+To run the rule: yara examplerule.yar file.txt - > If we get an output of <rulename> <file/dir> then the rule was a successful match
+
+
+#----Expanding rules (https://yara.readthedocs.io/en/stable/writingrules.html)
+Yara rules can obviously get complicated. There are a number of elements that Yara can match. Read documentation for more info, but some of the more common:
+
+Meta:
+This is similar to just commented code. This is like a description section. Does not influence the rule itself. You can view a rule's metadata via: yara -m <rule> <target of rule> It is written as follows:
+
+rule examplerule {
+  meta:
+    author = "Brandon"
+    date = 15
+    Active = true
+}
+
+Strings:
+We can search for strings w/i a file. Can also search for hex. This is obviously expandable to regex. W/ strings, matches are stored within a specified variable, for example:
+
+rule helloworld_checker {
+  strings:
+    $hello_world = "hello World!"
+  condition:
+    $hello_world
+}
+
+This will only match specifically "hello World!". If we want to match more we use the "any of them" condition, which will trigger a match if any of the variables are matched. 
+
+rule helloworld_checker {
+  strings:
+    $hello_world = "hello World!"
+    $hello_world_lower = "hello world"
+    $hello_world_upper = "HELLO WORLD"
+  condition:
+    any of them
+}
+
+Conditions:
+Conditions are required for a rule to be valid. These are nothing more than booleon operators to determine if a rule is matched or not. Many examples below:
+
+rule example {
+  strings:
+    $hello_world = "Hello World"
+    $txt_file = ".txt"
+    
+  conditions:
+    $hello_world <= 10
+    $hello_world >= 10
+    $hello_world != 10
+    $hello_world == 10
+    $helloworld and $txt_file  -> Check if the file contains both "Hello World" and ".txt"
+    $helloworld or $txt_file
+    not $helloworld
+ }
+ 
+ There are tons of others, but look at the documentation. It's nothing complicated.
+ 
+ 
+ #----Loki
+ Loki allows you to add your own rules based on threat intelligence gatherers or findings. There are a ton of rules pre-built rules found w/i yara/tools/Loki/signature-base directory. To scan files against this pre-compiled list of rules that match known-bad patterns, we can run:
+ 
+ python loki.py -p <file to scan>
+ 
+ #----YarGen
+ In the event that a malicious file goes undetected by YARA, or in an IR scenario we need to add signatures/patterns to a new rule, YaraGen is a tool used to create Yara rules a little easier. To use yarGen to create a rule based on a file, you can do the following:
+ 
+ python3 yarGen.py -m /home/cmnatic/suspicious-files/file2 --excludegood -o /home/cmnatic/suspicious-files/file2.yar
+
