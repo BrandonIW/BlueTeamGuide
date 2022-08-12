@@ -1,0 +1,97 @@
+#----Overview
+The idea here is to identify "normal" Windows-based processes and grasp a baseline "normal" on a machine to help identify abnormalities. Good tools to use are the following:
+
+Process Hacker & Process Explorer:
+- Better Task Manager. Allows for seeing PPIDs
+- Check if common Windows processes are running from the appropriate executable i.e. is svchost.exe running from the typical path in C:\Windows\system32\svchost.exe etc.
+
+Powershell:
+- Get-Process (https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-process?view=powershell-7.2)
+
+#----Processes
+
+System
+- System always has the PID of 4. System is a Kernal Mode process, as compared to a User Mode process. Kernal mode processes all share the same address space in memory, and thus are not isolated from other drivers or the OS. If a Kernal mode driver crashes, the entire OS crashes. 
+
+- "Normal" behaviour for System incldudes:
+1) No PPID
+2) Only ever one instance of System
+3) Run off of ntoskrnl.exe
+4) PID is always 4
+
+smss.exe
+- Session Manager Subsystem. Responsible for creating new sessions and is the first user-mode process started by the kernal. It starts win32k.sys, winsrv.dll and csrss.exe and wininit.exe. It will create env. variables and virtual mem. 
+
+- Normal behaviour:
+1) %SYSroot%\system32\smss.exe is the executable
+2) PPID is System/4
+3) Runs with User Account context of "Local System"
+4) Starts at boot. 
+
+
+csrss.exe
+- Client Svr Runtime process is the user-mode side of Windows subsystems. Responsible for making the Windows API available to other processes, mapping drive letters, and handling Windows shutdown. 
+
+- Normal Behaviour:
+1) Executable at: %SystemRoot%\System32\csrss.exe
+2) PPID is an instance of smss.exe BUT smss.exe terminates itself after, so there should not be a parent for this process
+3) Two or more instances being run
+4) Runs under context of Local System
+
+
+wininit.exe
+- Windows Initialization process, responsible for launching services.exe, as wwell as lsass.exe and lsaiso.exe in session 0. 
+
+- Normal Behaviour:
+1) Runs from %SYSROOT%/System32/wininit.exe
+2) PPID is smss.exe 
+3) One Instance
+4) Runs as SYSTEM
+
+services.exe
+- Handles all system services, starting/ending/restarting etc. Maintains a DB of services that can be queried w/ sc.exe. HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services
+
+Normal Behaviour:
+1) %SystemRoot%\System32\services.exe executable
+2) PPID of wininit.exe
+3) Runs as System
+4) Parent to many services including spoolsv.exe, msmpeng.exe, dllhost.exe, svchost.exe
+5) One instance only
+
+
+svchost.exe
+- Service Host is responsible for hosting and managing Windows Services from DLL files. It serves as a shell for loading these shared-services, and when we inspect svchost.exe closer in process explorer or smth, we see other services underneath it. You will see it being run w/ the cmd line: C:\Windows\system32\svchost.exe -k <Identifier>. The Identifier groups together similar services that share the same process. 
+
+- Normal Behaviour:
+1) Runs from %SystemRoot%\System32\svchost.exe
+2) Parent is services.exe
+3) There will be many instances
+4) Always contains a -k parameter in the cmd line. 
+
+lsass.exe
+- Process that enforces the security policy on the system. Verifies users logging into the system, handles password changes and access tokens. Commonly targeted by mimikatz to dump creds. 
+
+- Normal Behaviour:
+1)  Runs from %SystemRoot%\System32\lsass.exe
+2) Parent Process is wininit.exe
+3) Only 1 instance should be running
+4) Runs under SYSTEM context 
+
+
+winlogon.exe
+- This process loads the user profile by loading the user's NTUSER.dat. Also loads the CTRL+ALT+DEL key combo to login. 
+
+- Normal Behaviour:
+1) Runs from %SystemRoot%\System32\winlogon.exe
+2) Parent Process is smss, but it terminates immediately after, so there should not be a parent
+3) Runs under SYSTEM
+
+
+explorer.exe
+- Provides access to files/folders for users. Start Menu, Taskbar functionality as well. Spawned by userinit.exe, but userinit.exe exits after spawning explorer.exe. No Parent process 
+
+- Normal Behaviour:
+1) Runs from %SystemRoot%\explorer.exe
+2) Parent Process is userinit.exe, but it terminates immediately after, so there should not be a parent
+3) Runs under the logged in user's context
+4) One instance per user 
