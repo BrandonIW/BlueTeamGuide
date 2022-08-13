@@ -1,0 +1,59 @@
+File & Disk Utilities (https://docs.microsoft.com/en-us/sysinternals/downloads/file-and-disk-utilities) There's a ton. Can't go through them all
+
+1) Sigcheck
+- Cmdline utility that shows file version, timestamp info, digitial signature details and cert chains. Can also check a file's status on Virus Total. For example, can scan for any unsigned executable files within a directory:
+sigcheck -u -e C:\Windows\System32 --> If any files appear, they would be worth looking at, as being unsigned is a little sus 
+
+Output looks smth like:
+Verified: Signed
+Signing Date: <Date>
+Published: <Publisher>
+Company: <Company>
+Description: <Description>
+Product Version: <Version>
+Mcachine type: 64/32
+MD5: <hash>
+SHA1: <Hash> etc. 
+
+2) Streams
+Data inside a file stems from "streams" of data. The typical is $data, which would normally just contain whatever data we're looking at, e.g. the text in a text file. However you can sort of 'hide' or embedd other forms of data, often metadata or malware, inside separate streams that are harder to find. It's kinda like a file inside of a file, and that embedded file has some additonal data or smth like that. ONLY FOR NTFS
+
+To view a file's data streams, we can run the sysinterals tool called Streams. Simply: streams <file>. However, to view the data inside that stream is a little different. Pwershell can be used for that as:
+
+Get-Item -path <path to file> -stream <name of data stream> --> Shows data streams associated with a file
+Get-Content -path <path to file> -stream <name of data stream> --> Gets the content inside 
+
+
+Networking Utilities (https://docs.microsoft.com/en-us/sysinternals/downloads/networking-utilities)
+
+1) TCP View
+- Shows detailed listing of all TCP & UDP endpoints on your system, as well as the local and remote addresses and state of the connections. Basically netstat. Nothing special
+
+
+Process Utilities (https://docs.microsoft.com/en-us/sysinternals/downloads/process-utilities)
+1) Autorun
+- Covered in Dig 2 I believe. Comprehensively looks at all locations that would suggest a program will auto-start on boot. Good for finding shit that may have persistence. 
+- Image Hijacks are a good spot as they show you redirects. I.e. If task manager is run, run this exectuable instead 
+
+2) Process Explorer
+- Basically just really in-depth process info. Can see processes, their paht, cmdline, PID, user context, name, services they depend on, any active TCP/IP sessions, printable strings in the process etc. etc. Just a shit load of info on processes. 
+
+
+3) Process Monitor
+- Pretty wild one. It is a live capture of Registry, file system, network and process activity. You can filter heavily. For example you can see live changes to your registry, and info regarding what is making those changes. Definitely hugely complex but lookup stuff if needed
+
+4) Psexec
+- Allows for execution of processes on other systems. Such as launching cmd prompts on remote systems. Often used maliciously. 
+
+
+Security Utilities (https://docs.microsoft.com/en-us/sysinternals/downloads/security-utilities)
+
+1) Sysmon - Separate section on this
+
+System Information Utilities (https://docs.microsoft.com/en-us/sysinternals/downloads/system-information)
+
+Misc (https://docs.microsoft.com/en-us/sysinternals/downloads/misc-utilities):
+
+1) Strings
+- Probably the most useful tools. Scans any file for any univode or ascii strings of length 3 or more characters. To search for a particular string:
+strings * | findstr /i TextToSearchFor
