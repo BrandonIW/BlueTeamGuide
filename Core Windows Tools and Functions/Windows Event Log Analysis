@@ -1,4 +1,4 @@
-Accessed by:
+#----Accessing & Reading Logs
 
 Event Viewer (GUI-based application)
 - Already familiar w/ this. Straight fwd
@@ -12,3 +12,45 @@ wevtutil qe Security /c:100 /f:text --> Query 100 events from Security log
 
 
 Get-WinEvent (PowerShell cmdlet)
+- Pwershell tool to query logs. Pretty easy but can run Get-Help Get-WinEvent for some assistance. Examples are below
+
+Get-WinEvent -LogName Application | Where-Object { $_.ProviderName -Match 'WLMS' }   #remmeber w/ pwrshell "$_" refers to a placeholder/variable for the currently selected variable/log. The "." in $_. is basically the same as Python's methods. We want to select the "ProviderName" method in our variable (the line of log) and see if it matches WLMS. $_. you'll see in pipes and filtering. 
+
+Get-WinEvent -FilterHashtable @{
+  LogName='Application'
+  ProviderName='WLMS'
+}
+
+- The above code is the same as the one-liner, but more efficent. It's a hash table we're we can define key/value pairs like a dict in python. Additional Hashtable values include:
+LogName
+ProviderName
+Path
+Keywords
+ID
+Level
+StartTime
+EndTime
+UserID
+Data
+
+- Another Example:
+Get-WinEvent -FilterHashtable @{
+  LogName='Microsoft-Windows-PowerShell/Operational'
+  ID=4104} | Select-Object -Property Message | Select-String -Pattern 'SecureString'
+  
+  
+#----XPath Filtering
+Win. Event Logs supports an XML Path-based language for finding and filtering logs. It looks kinda stupid but it's something like this:
+
+XPath Query: *[System[(Level <= 3) and TimeCreated[timediff(@SystemTime) <= 86400000]]]
+
+Honestly this seems useless, but regardless...we can use the XML View in Evnt Viewer to get help building a query w/ Xpaths. We can view an event's XML form, and work our way through parent > Child XML tags to create an appropriate Xpath query. To filter using Xpaths in Get-WinEvent, the cmd would look smth like:
+
+Get-WinEvent -LogName Application -FilterXPath '<XPath Filter here>'
+Get-WinEvent -LogName Application -FilterXPath '*/System/Provider[@Name="WLMS"]'
+Get-WinEvent -LogName Security -FilterXPath '*/EventData/Data[@Name="TargetUserName"]="System"' -MaxEvents 1
+Get-WinEvent -LogName Application -FilterXPath '*/System/EventID=101 and */System/Provider[@Name="WLMS"]'
+Get-WinEvent -LogName Application -FilterXPath '*/System/Provider[@Name="WLMS"] and */System/TimeCreated[@Name="SystemTime"]="2020-12-15T01:09:08.940277500Z"'
+
+
+  
