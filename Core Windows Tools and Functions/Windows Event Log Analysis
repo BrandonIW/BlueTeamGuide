@@ -51,6 +51,12 @@ Get-WinEvent -LogName Application -FilterXPath '*/System/Provider[@Name="WLMS"]'
 Get-WinEvent -LogName Security -FilterXPath '*/EventData/Data[@Name="TargetUserName"]="System"' -MaxEvents 1
 Get-WinEvent -LogName Application -FilterXPath '*/System/EventID=101 and */System/Provider[@Name="WLMS"]'
 Get-WinEvent -LogName Application -FilterXPath '*/System/Provider[@Name="WLMS"] and */System/TimeCreated[@Name="SystemTime"]="2020-12-15T01:09:08.940277500Z"'
+Get-WinEvent -Path <PAth to custom evnt log file> -FilterXpath '<Xpath Query>' 
 
+#----Event IDs
+Some Events that may be of interest. Obviously not exhaustive. Mitre Att&ck can be a good place to look for IOCs WRT events for certain compromises
 
-  
+7045 - New Service Installed (System Log)
+2004/2005/2006/2033/2009 - Firewall rule added/changed/deleted/Failed to Load 
+4738/4728/4670 - Events related to changes on account objects and/or permissions.
+1102/104 - Log has been cleared 
