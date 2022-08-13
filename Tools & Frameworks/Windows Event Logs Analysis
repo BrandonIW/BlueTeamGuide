@@ -1,0 +1,14 @@
+Accessed by:
+
+Event Viewer (GUI-based application)
+- Already familiar w/ this. Straight fwd
+
+Wevtutil.exe (command-line tool)
+- Cmdline version to query logs. Fairly straightforward but: wevtutil /? for more information. Some examples of cmds are as follows:
+
+wevtutil qe Application /c:3 /rd:true /f:text --> Query the events in the Application Log. Read a max of 3 events, in reverse direction, and format the output as a human readable text
+
+wevtutil qe Security /c:100 /f:text --> Query 100 events from Security log 
+
+
+Get-WinEvent (PowerShell cmdlet)
