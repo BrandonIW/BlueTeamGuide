@@ -1,0 +1,2 @@
+#----Overview
+Osquery is basically a tool allowing you to treat endpoints as relational databases and query them for info using SQL syntax. 
