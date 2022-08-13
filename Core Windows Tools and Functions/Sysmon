@@ -38,4 +38,98 @@ There are 24 events that sysmon will monitor more, and each can be specified in 
 	</DnsQuery>
 </RuleGroup> 
 
+#----Installation 
+Just download the binary from MS. It does require a config file to run, so download this (https://github.com/SwiftOnSecurity/sysmon-config) or make one yourself. To start Sysmon:
+Sysmon.exe -accepteula -i sysmonconfig-export.xml
+
+#----Metasploit Detection
+- The Meterpreter Shell uses port 4444 listening by default. We may want a config w/ smth like:
+<RuleGroup name="" groupRelation="or">
+	<NetworkConnect onmatch="include">
+		<DestinationPort condition="is">4444</DestinationPort>
+		<DestinationPort condition="is">5555</DestinationPort>
+	</NetworkConnect>
+</RuleGroup>
+
+Remember with sysmon, if smth gets logged, it appears in EventViewer or sent to a SIEM if setup. 
+
+Get-WinEvent -Path <Path to Log> -FilterXPath '*/System/EventID=3 and */EventData/Data[@Name="DestinationPort"] and */EventData/Data=4444' }-Detects destination port 4444
+
+
+
+#----Mimicatz Detection
+
+1) Create a config that straight-up looks for stuff called mimikatz:
+
+<RuleGroup name="" groupRelation="or">
+	<FileCreate onmatch="include">
+		<TargetFileName condition="contains">mimikatz</TargetFileName>
+	</FileCreate>
+</RuleGroup>
+
+2) We can also look for abnormal LSASS behaviour. Because Mimikatz dumps LSASS, we can try and detect if LSASS is accessed by any process other than svchost.exe. 
+
+<RuleGroup name="" groupRelation="or">
+	<ProcessAccess onmatch="exclude">
+		<SourceImage condition="image">svchost.exe</SourceImage>
+	</ProcessAccess>
+	<ProcessAccess onmatch="include">
+		<TargetImage condition="image">lsass.exe</TargetImage>
+	</ProcessAccess>
+</RuleGroup>
+
+
+#----Hunting RATs and Backdoors
+- Often will use back-connect ports that we want to watch out for. Similar to mimikatz
+
+Get-WinEvent -Path <Path to Log> -FilterXPath '*/System/EventID=3 and */EventData/Data[@Name="DestinationPort"] and */EventData/Data=<Port>'
+
+<RuleGroup name="" groupRelation="or">
+	<NetworkConnect onmatch="include">
+		<DestinationPort condition="is">1034</DestinationPort>
+		<DestinationPort condition="is">1604</DestinationPort>
+	</NetworkConnect>
+	<NetworkConnect onmatch="exclude">
+		<Image condition="image">OneDrive.exe</Image>
+	</NetworkConnect>
+</RuleGroup>
+
+#----Hunting Persistence
+1) Hunting Startup Persistence
+- Check for files created in \startup\ or \start menu
+
+<RuleGroup name="" groupRelation="or">
+	<FileCreate onmatch="include">
+		<TargetFilename name="T1023" condition="contains">\Start Menu</TargetFilename>
+		<TargetFilename name="T1165" condition="contains">\Startup\</TargetFilename>
+	</FileCreate>
+</RuleGroup>
+
+2) Registry Persistence
+
+<RuleGroup name="" groupRelation="or">
+	<RegistryEvent onmatch="include">
+		<TargetObject name="T1060,RunKey" condition="contains">CurrentVersion\Run</TargetObject>
+		<TargetObject name="T1484" condition="contains">Group Policy\Scripts</TargetObject>
+		<TargetObject name="T1060" condition="contains">CurrentVersion\Windows\Run</TargetObject>
+	</RegistryEvent>
+</RuleGroup>
+
+
+#----Hunting Evasion Techniques
+- There are lots of evasion techniques, including: Alternate Data Streams, Injections, Masquerading, Packing/Compression, Recompiling, Obfuscation, Anti-Reversing Techniques. 
+
+1) ADS - Malware tries to hide its files from normal inspectiation by using an alternate data stream apart from $DATA. This can help avoid detection. With Sysmon we can write a rule to check the Event ID assocaited with newely created and accessed data streams (Event ID 15). 
+
+- Checks for in the Temp and Downloads folder that end in .hta or .bat and are inside an alternate data stream. 
+<RuleGroup name="" groupRelation="or">
+	<FileCreateStreamHash onmatch="include">
+		<TargetFilename condition="contains">Downloads</TargetFilename>
+		<TargetFilename condition="contains">Temp\7z</TargetFilename>
+		<TargetFilename condition="ends with">.hta</TargetFilename>
+		<TargetFilename condition="ends with">.bat</TargetFilename>
+	</FileCreateStreamHash>
+</RuleGroup>
+
+Get-WinEvent -Path <Path to Log> -FilterXPath '*/System/EventID=15'
 
