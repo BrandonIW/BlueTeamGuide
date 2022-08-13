@@ -1,0 +1,41 @@
+#----Overview
+
+Sysmon is a tool w/i Sysinternals package. Far more granular version of Event Logs basically. It monitors and logs system activity to the windows event log. Provides details about process creation, network connections, and changes to file creation time. You must subsequently analyze the logs that sysmon creates to detect anomalous activity. 
+
+Often used in conjunction w/ SIEM systems. They can export logs to SIEMs, and also store logs in Applications and Service Logs/Microsoft/Windows/sysmon/operational.
+
+#---Config
+Sysmon's functioning depends on a config file to tell it how to analyze the events it is receiving. A common config file can be found here: https://github.com/SwiftOnSecurity/sysmon-config/blob/master/sysmonconfig-export.xml. 
+
+There are 24 events that sysmon will monitor more, and each can be specified in the config file. Some examples of events and example config files associated w/ them:
+
+- Look for any processes that have been created, but exclude svchost.exe b/c it's probably normal and we don't want too many logs to sift through
+<RuleGroup name="" groupRelation="or">
+	<ProcessCreate onmatch="exclude">
+	 	<CommandLine condition="is">C:\Windows\system32\svchost.exe -k appmodel -p -s camsvc</CommandLine>
+	</ProcessCreate>
+</RuleGroup>
+
+- Scan for an nmap.exe binary/file that is transmitted in network activity. Check is a network connection is attempted on port 4444 (oft. metasploit)
+<RuleGroup name="" groupRelation="or">
+	<NetworkConnect onmatch="include">
+	 	<Image condition="image">nmap.exe</Image>
+	 	<DestinationPort name="Alert,Metasploit" condition="is">4444</DestinationPort>
+	</NetworkConnect>
+</RuleGroup>
+
+- Logs events when a file is created or overwritten. This example looks for files named w/ a particular string
+<RuleGroup name="" groupRelation="or">
+	<FileCreate onmatch="include">
+	 	<TargetFilename name="Alert,Ransomware" condition="contains">HELP_TO_SAVE_FILES</TargetFilename>
+	</FileCreate>
+</RuleGroup> 
+
+- Logs DNS queries. Specifically in this care, we're exlcuding any dns queries that end in microsoft.com 
+<RuleGroup name="" groupRelation="or">
+	<DnsQuery onmatch="exclude">
+	 	<QueryName condition="end with">.microsoft.com</QueryName>
+	</DnsQuery>
+</RuleGroup> 
+
+
