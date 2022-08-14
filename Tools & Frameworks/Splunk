@@ -1,0 +1,46 @@
+#----Overview
+Splunk is an SIEM, which is software that provides a central location ot collect logged data from multiple sources within your enviornment. That data is aggregated, formatted, normalized so you can analyze it efficiently. SIEMs assist w/
+1) Threat Detection
+2) Threst Investigation
+3) Response time to a threat
+
+#----Apps
+- To Browse and install more apps for Splunk to use, you can hit the cog wheel beside the Apps and hit "Browse more apps" or "install app from file" or "create app." Apps can also be found, read-about, and downloaded at: https://splunkbase.splunk.com/
+- The typical Search & Reporting Splunk App is used to enter Splink queries to search for data that Splunk has ingested. When you select any app, you'll see a second bar of options appear (for search & reporting app, you'll see "Search", "analytics" "dataset" etc. etc.)
+
+#----Adding Data
+- Splunk can obviously ingest data. Data sources that splunk can ingest are grouped as follows:
+1) Files and dirs - Most data that you might be interseted in comes in directly as files/folders
+2) Network Events 
+3) IT operations
+4) Cloud Services - Data from AWS, Azure etc
+5) Database Services - Data from Oracle, Mysql etc
+6) Security Servvices - Data from AVs, Endpoint protection stuff
+7) Virtualization Services - Data from Vmware/Hyperv etc
+8) Application Servers - Data from WebSphere, IIS, Apache
+9) Windows Sources - Windows specific data sources like event logs, registry, AD
+10) Other
+
+
+- There are guides available for ingesting popular sources of data that you'll be presented w/ when you select "add Data." There are also options for "upload" "monitor" & "Forward". To upload local event logs for example, you can do something like "Monitor" > "local event logs" and you'll get a small list local windows event logs to look at. For a larger/more granular list, can use Settings > Data Inputs > Event Log collections 
+
+
+#----Querying Data
+- Search queries in Splunk are nice b/c they transcend the type of data that's been ingested. It's really just a matter of playing with the search bars and options, but some simple search queries are:
+
+source=<source of an event> i.e. source="tutorialdata.zip:.\\www1/access.log"
+source="xmlwineventlog:microsoft-windows-sysmon/operational" EventID=12   ---> AND event ID is 12
+source="xmlwineventlog:microsoft-windows-sysmon/operational" GoogleUpdate.exe  ---> Searches for keywords
+* GoogleUpdate.exe Firefox.exe ---> Searches for keywords across all events inside of splunk, for events that contain BOTH keywords 
+
+- From the left-side menu of Splunk's search, we can select "Search" to see the names (values) of each source and the number of events (count), and the percentage value (%) of all the events for each source.
+
+- You can also add to existing search in similar fashion that you can add to wireshark filters. Select/highlight whatever you want to add, and L-click to add to existing search 
+
+#----Sigma
+Each SIEM has its own structure/format for creating queries. It isn't easy to share SIEM queries with other Security Teams if they don't use your exact SIEM product. For example, you can have a repo of Splunk queries that your team utilizes for threat exposure checks or threat hunting. These queries (or rules) can be created in the Sigma format and shared with teams that don't use Splunk. Sigma rules can be shared along with IOCs and YARA rules as Threat Intelligence. 
+
+Sigma rules are written in YAML ("YAML is a human friendly data serialization standard for all programming languages."  )
+
+You can do these conversions online via: https://uncoder.io/
+ 
