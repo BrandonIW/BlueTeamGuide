@@ -76,5 +76,10 @@ index="botsv2" 10.0.2.101 sourcetype="stream:http" *beer*
 | table site
 
 
+-> Search for emails with a recipient of hbernhard@berkbeer.com, with attached document called "Saccharomyces_cerevisiae_patent.docx" (Basically we're creating these rules not off memory, but starting with a broad search for email, and then selecting the fields and adding them to the rule using splunk.
+
+index="botsv2" sourcetype="stream:smtp" | spath "receiver_email{}" | search "receiver_email{}"="hbernhard@berkbeer.com"| spath "attach_filename{}" | search "attach_filename{}"="Saccharomyces_cerevisiae_patent.docx"
+
+
 
 
