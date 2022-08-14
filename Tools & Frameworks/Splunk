@@ -67,3 +67,14 @@ Alert action: What happens when the alert triggers?
 e.g. Send an email or send a message in an application using a webhook. 
 
 
+#----Examples:
+Search for a specific website that a user visited regarding a beer company.
+-> Search within the provided index. We find her Src IP address and include that and we're looking specifically for http data. Then we remove any duplicate websites and format the return websites in a table. Specifically looking for any websites with the word "beer"
+
+index="botsv2" 10.0.2.101 sourcetype="stream:http" *beer*   
+| Dedup site 
+| table site
+
+
+
+
