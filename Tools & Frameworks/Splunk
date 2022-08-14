@@ -44,3 +44,26 @@ Sigma rules are written in YAML ("YAML is a human friendly data serialization st
 
 You can do these conversions online via: https://uncoder.io/
  
+ 
+ #----Dashboards
+ Dashboards are used to contain visualizers/visualizations of data such as pie charts/graphs etc. etc. If we were told to create a dashboard show the top 5 Sysmon Event IDs on the dashboard for the SOC team, you can do smth like:
+ 
+ source="xmlwineventlog:microsoft-windows-sysmon/operational" | top limit=5 EventID  -> Search for events from this source. Then get the top 5 most freqent events and their eventIDs. Then select the "Visualization" button to create visualizers based on that info. You can also do stuff like select the ellipses at the top-right and add that visualizer to the home page of splunk. 
+ 
+ 
+ #----Alerts
+ Alerts is an Enterprise option allowing you to monitor for, and respond to, alerts. Cannot do this in free version. The workflow for creating an alert is simple:
+
+Search: What do you want to track? 
+e.g. There is an external IP brute-forcing a web page. We want to be alerted whenever this IP address is actively attacking the infrastructure. 
+
+Alert Type: How often do you want to check for events?
+e.g. Since we want to be alerted whenever this IP is active, a real-time alert is what we'll configure. 
+
+Alert trigger conditions and throttling: How often do you want to trigger an alert?
+e.g. If 10 failed password events under 1 minute, generate an alert. 
+
+Alert action: What happens when the alert triggers?
+e.g. Send an email or send a message in an application using a webhook. 
+
+
