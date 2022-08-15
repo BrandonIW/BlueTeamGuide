@@ -81,5 +81,9 @@ index="botsv2" 10.0.2.101 sourcetype="stream:http" *beer*
 index="botsv2" sourcetype="stream:smtp" | spath "receiver_email{}" | search "receiver_email{}"="hbernhard@berkbeer.com"| spath "attach_filename{}" | search "attach_filename{}"="Saccharomyces_cerevisiae_patent.docx"
 
 
+-> Search for src ip 10.0.2.109, http traffic with a cookie value in the http packets, but filter out NO GET requests
+
+index="botsv2" src_ip="10.0.2.109" sourcetype="stream:http" cookie=*| spath http_method | search http_method!=GET
+
 
 
