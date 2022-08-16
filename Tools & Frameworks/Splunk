@@ -68,6 +68,9 @@ e.g. Send an email or send a message in an application using a webhook.
 
 
 #----Examples:
+Start Wide, get small. Probably a good mantra for Splunk's searching
+
+
 Search for a specific website that a user visited regarding a beer company.
 -> Search within the provided index. We find her Src IP address and include that and we're looking specifically for http data. Then we remove any duplicate websites and format the return websites in a table. Specifically looking for any websites with the word "beer"
 
@@ -86,4 +89,8 @@ index="botsv2" sourcetype="stream:smtp" | spath "receiver_email{}" | search "rec
 index="botsv2" src_ip="10.0.2.109" sourcetype="stream:http" cookie=*| spath http_method | search http_method!=GET
 
 
+-> Search for powerpoint files in a specific dir. 
+index="botsv2" mallory src_ip="10.0.4.4"| spath filename | search filename="Home\\mallory.kraeusen\\*pp*"
 
+-> Logical OR with multiple keywords
+index="botsv2" mallory host=venus (*.ppt OR *.pptx)
