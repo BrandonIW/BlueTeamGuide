@@ -94,3 +94,15 @@ index="botsv2" mallory src_ip="10.0.4.4"| spath filename | search filename="Home
 
 -> Logical OR with multiple keywords
 index="botsv2" mallory host=venus (*.ppt OR *.pptx)
+
+-> Emails sent to a domain:
+index="botsv2" sourcetype="stream:smtp" attach | spath "receiver_email{}" | search "receiver_email{}"="*@froth.ly"
+
+-> When finding SSL-related info, probably look at the TCP stream:
+index="botsv2" sourcetype="stream:tcp" 45.77.65.211 ssl_issuer="C = US"
+
+-> Finding downloaded data via FTP:
+index="botsv2" sourcetype="stream:ftp" method=RETR
+
+-> Searching for data within registry
+index="botsv2" source="WinRegistry" *Software\\Microsoft\\Network*
