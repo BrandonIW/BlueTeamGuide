@@ -1,0 +1,56 @@
+#----Overview
+Redline is essentially a mem. analysis tool that provides an extremely high birds-eye view of a target, but not a particularly deep analysis like Volatility. Info includes:
+
+- Collect registry data (Windows hosts only)
+- Collect running processes
+- Collect memory images (before Windows 10)
+- Collect Browser History
+- Look for suspicious strings
+
+#----Data Collection
+There are 3 methods to collect data with Redline
+1) Standard Collector - Gathers to minimum amount of data needed for redline to function. Fastest method
+2) Comprehensive Collector - Gathers to the most amount of data possible from the host. May take an hour or more
+3) IOC Search Collector (Windows Only) - Collects only data that matches an IOC that you created with Redline's IOC Editor. You use this one if you want to run the data through known IOCs that you're looking for. 
+
+When you create a new Standard Collector or Comprehensive, you want to then customize what you're looking to extract and look for with the "Edit your script" button. Here we have 5 tabs to work with and edit, Memory, Disk, System, Network and Other. 
+
+1) Memory:
+- Here we can get memory data on processes, drivers and hooks. Choose what you want
+
+2) Disk:
+- Can enumerate disks, volumes, and files. Gets info such as hashes, strings, and much more
+
+3) System:
+- This one gives you system info such as OS, regitstry enumeration, Event lots, user accounts/groups, Prefetch files etc. 
+
+4) Network:
+- Port enumeration, ARP and Routing Tables, DNS Tables, Cookies, URL History, Files Downloaded etc.
+
+5) Other:
+- Services and Tasks. 
+
+Once our collector is created, save it to an empty folder. The empty folder will be populated with a series of files, most notably a RunRedlineAudit.bat file. We just need to run this file (there are instructions in Redline as well). After the script is finished, you will notice a new file created - AnalysisSession1 (in the Sessions folder) with the .mans extension. This file is what we need to be able to import into Redline for investigation. Just double-click on the file to import the audit data.
+
+#----GUI
+- Once the data is imported into Redline, (the batch file creates the data) we can open it up in Redline and view it. On the left panel we'll see the "Analysis Data" which is just where we go to find all the stuff we searched for, i.e. OS Info, Users, Event Logs, Registry Info, Process Info etc. etc. Some additional stuff we should know:
+1) Handle - This is a connection from a process to an object or resource in Windows OS. i.e. Handles are used for referencing internal objects liek files, registry keys etc. 
+2) Memory Sections - Shows any unsigned DLLs used in memory. These would be sus
+3) Strings - Just captured strings
+4) Ports - Very important as most C2 svrs will be communicating on in/outbound ports on our host. Things like Notepad and Explorer probably shouldn't have outbound connetions. 
+5) Timeline - This one is kinda cool, because it allows us to view a chronological order of everything that occurred basically. Can filter this further with "TimeWRinkles" 
+
+#----IOC Search Collectors
+Examples of IOCs can be hashes, Ip addresses, C2 domains, file size, filename, registry key etc. Pretty much any artefact can be an IOC. We can use a tol called Mandiant IOC Editor to create IOCs. It's quite cool. Its like a gigantic tree of different options, such as File Hash, File Drive, System information, there's a billion different artefacts basically to choose from, and you can add logical AND OR in a tree-pattern to create an IOC.
+
+Example:
+File Strings contains psylog.exe
+OR
+  File Strings contain RIDEV_INPUTSINK
+  AND
+    File MD% is <HAsh>
+    AND
+      File Size is 35400
+ 
+In Redline, if we want to focus on an IOC, we choose "IOC Search Collector" and browse to the location of the .ioc file we created with the editor. Then you simply run the batch file that gets, created, and import ht eresultant analysis file. Same as doing a standard Collector. When analyzing, any "hits" refer to aspects of the IOC that Redline found. For example, if our IOC is the above ^^^, Redline will return hits that only match the File Strings contains psylog.exe, but not any of the other AND statements. So this is probably a false positive. And ideal match that is likely to be an IOC is one that returns all hits, for all ANDs/ORs above. 
+      
