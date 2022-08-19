@@ -1,0 +1,33 @@
+#----Capturing Memory
+Live Systems:
+
+- There are a number of tools that can be used to capture memory on a live system. For example:
+1) FTK imager - https://accessdata.com/product-download/ftk-imager-version-4-2-0
+2) Redline 
+3) Dumpit.exe
+4) wind32dd.exe/win64dd.exe
+
+Offline & VMs: 
+
+- Typically these tools output a .raw file. 
+- Offline machines can have memory extracted, to come extent, via %SystemDrive%/hiberfil.sys file. This is the gibernation file containing a compressed memory image from the previous boot. MS Windows uses this to provide a faster boot time even when the system is fully shut down. 
+- For VMs, we can often find memory in the data store of the hyervisor, and it can simply be copied/pasted., without disturbing the VM. 
+
+Vmware - .vmem file
+HyperV - .bin file
+Parallels - .mem file
+Virtualbox - .sav file
+
+
+#----How To/Cmds/Examples etc
+volatility -f <memory file> imageinfo -> Provides us with a high level summary of the memory sample. Often used to ID the OS, hardware architecture etc. Also gives us the suggested "PROFILE" to use when passing the image to other cmds in volitility. 
+
+volatility -f <memory file> --profile=<profile> pslist -> Shows active processes running at the time of memory file creation
+
+volatility -f <memory file> --profile=<profile> netscan -> Shows active network connections at the time of memory file creation
+
+volatility -f <memory file> --profile=<profile> malfind -D <Destination Directory> -> Finds "injected code" in memory, or what volatility suspects is injected code, and dumps it to a directory of our choice. 
+
+volatility -f <memory file> --profile=<profile> dlllist -> lists all DLLs in mem. 
+
+volatility -f <memory file>w --profile=<profile> --pid=PID dlldump -D <Destination Directory> -> Pull out DLLs being accessed by a specific PID/process. Often we want to select the suspicious process
