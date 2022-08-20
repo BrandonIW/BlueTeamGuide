@@ -23,3 +23,9 @@ TLS handshake
 
 Decrypting if we have key:
 1) Edit > Pref > Protocols > TLS > Fill in options (port=start_tls, protocol=http)
+
+#----Finding Information
+HTTP User Agent Headers - Can find OS information/Browser Information 
+DHCP/NBNS traffic - Hostname information. And obviously IP info. 
+Kerberos Traffic, specifically AS-REQ traffic - Can find the username of the user requesting a ticket from a particular IP. Therefore likely the username used to login to that PC 
+
