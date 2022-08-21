@@ -24,10 +24,22 @@ volatility -f <memory file> imageinfo -> Provides us with a high level summary o
 
 volatility -f <memory file> --profile=<profile> pslist -> Shows active processes running at the time of memory file creation
 
-volatility -f <memory file> --profile=<profile> netscan -> Shows active network connections at the time of memory file creation
+volatility -f <memory file> --profile=<profile> netscan -> Shows active network connections at the time of memory file creation. I.e C2 server communications
+
+volatility -f <memory file> --profile=<profile> netscan | grep -vi closed -> Filter out any closed ports. We only see open/list etc. 
 
 volatility -f <memory file> --profile=<profile> malfind -D <Destination Directory> -> Finds "injected code" in memory, or what volatility suspects is injected code, and dumps it to a directory of our choice. 
 
 volatility -f <memory file> --profile=<profile> dlllist -> lists all DLLs in mem. 
 
 volatility -f <memory file>w --profile=<profile> --pid=PID dlldump -D <Destination Directory> -> Pull out DLLs being accessed by a specific PID/process. Often we want to select the suspicious process
+
+volatility -f <memory file>w --profile=<profile> clipboard -> Extract contents of windows clipboard  
+
+volatility -f <memory file>w --profile=<profile> sockets -> Listening TCP/UDP Sockets on the host
+
+volatility -f <memory file>w --profile=<profile> psxview -> This is good for listing all the running processes on the system the memory image is taken from, AND comparing if that process can be seen from various different process gatherer's like pslist, psscan, etc. If we see a process appear in all but one (all are True except for one) that's kinda sus
+
+volatility -f .\cridex.vmem --profile=<profile> shellbags -> Can get evidence regarding what files a user accessed. 
+
+.\volatility.exe -f .\cridex.vmem --profile=WinXPSP3x86 connscan -> View TCP Sessions. NOT UDP 
