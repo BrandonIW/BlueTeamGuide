@@ -47,3 +47,7 @@ volatility -f .\cridex.vmem --profile=<profile> shellbags -> Can get evidence re
 .\volatility.exe -f .\cridex.vmem --profile=WinXPSP3x86 cmdline -> Command line cmds that are run when the process executed 
 
 .\volatility.exe -f .\cridex.vmem --profile=WinXPSP3x86 procdump -p 1640 --dump-dir .  -> Download a specific file associated with a PID to a directory
+
+.\volatility.exe -f .\cridex.vmem --profile=WinXPSP3x86 memdump -p 1640 --dump-dir .  -> Create a memory dump file. Can be later analyzed by "strings" tool/cmd to find printable strings in the dump. Grep for what you want, i.e. IP addresses, websites, keywords that you found earlier in the investigation
+
+.\volatility.exe -f .\cridex.vmem --profile=WinXPSP3x86 printkey -K Software\Microsoft\Windows\CurrentVersion\Run -> Reach into registry and grab keys associated with particular registry path 
