@@ -43,3 +43,7 @@ volatility -f <memory file>w --profile=<profile> psxview -> This is good for lis
 volatility -f .\cridex.vmem --profile=<profile> shellbags -> Can get evidence regarding what files a user accessed. 
 
 .\volatility.exe -f .\cridex.vmem --profile=WinXPSP3x86 connscan -> View TCP Sessions. NOT UDP 
+
+.\volatility.exe -f .\cridex.vmem --profile=WinXPSP3x86 cmdline -> Command line cmds that are run when the process executed 
+
+.\volatility.exe -f .\cridex.vmem --profile=WinXPSP3x86 procdump -p 1640 --dump-dir .  -> Download a specific file associated with a PID to a directory
