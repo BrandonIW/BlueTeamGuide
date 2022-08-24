@@ -34,13 +34,13 @@ volatility -f <memory file> --profile=<profile> malfind -D <Destination Director
 
 volatility -f <memory file> --profile=<profile> dlllist -> lists all DLLs in mem. 
 
-volatility -f <memory file>w --profile=<profile> --pid=PID dlldump -D <Destination Directory> -> Pull out DLLs being accessed by a specific PID/process. Often we want to select the suspicious process
+volatility -f <memory file> --profile=<profile> --pid=PID dlldump -D <Destination Directory> -> Pull out DLLs being accessed by a specific PID/process. Often we want to select the suspicious process
 
-volatility -f <memory file>w --profile=<profile> clipboard -> Extract contents of windows clipboard  
+volatility -f <memory file> --profile=<profile> clipboard -> Extract contents of windows clipboard  
 
-volatility -f <memory file>w --profile=<profile> sockets -> Listening TCP/UDP Sockets on the host
+volatility -f <memory file> --profile=<profile> sockets -> Listening TCP/UDP Sockets on the host
 
-volatility -f <memory file>w --profile=<profile> psxview -> This is good for listing all the running processes on the system the memory image is taken from, AND comparing if that process can be seen from various different process gatherer's like pslist, psscan, etc. If we see a process appear in all but one (all are True except for one) that's kinda sus
+volatility -f <memory file> --profile=<profile> psxview -> This is good for listing all the running processes on the system the memory image is taken from, AND comparing if that process can be seen from various different process gatherer's like pslist, psscan, etc. If we see a process appear in all but one (all are True except for one) that's kinda sus
 
 volatility -f .\cridex.vmem --profile=<profile> shellbags -> Can get evidence regarding what files a user accessed. 
 
@@ -53,3 +53,5 @@ volatility -f .\cridex.vmem --profile=<profile> shellbags -> Can get evidence re
 .\volatility.exe -f .\cridex.vmem --profile=WinXPSP3x86 memdump -p 1640 --dump-dir .  -> Create a memory dump file. Can be later analyzed by "strings" tool/cmd to find printable strings in the dump. Grep for what you want, i.e. IP addresses, websites, keywords that you found earlier in the investigation
 
 .\volatility.exe -f .\cridex.vmem --profile=WinXPSP3x86 printkey -K Software\Microsoft\Windows\CurrentVersion\Run -> Reach into registry and grab keys associated with particular registry path 
+
+volatility -f <memory file> --profile=<profile> --phyoffset=<physical offset location in memory> --dump-dir=<local dir to dump the file from memory> --name -> Grabs a file from memory by using the physical offset location (this info can be found w/ other volitility cmds) and dump that file to a dir w/ the same name as the og file in memory
