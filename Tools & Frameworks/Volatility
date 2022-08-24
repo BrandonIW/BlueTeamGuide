@@ -24,6 +24,8 @@ volatility -f <memory file> imageinfo -> Provides us with a high level summary o
 
 volatility -f <memory file> --profile=<profile> pslist -> Shows active processes running at the time of memory file creation
 
+volatility -f <memory file> --profile=<profile> pstree -> Same as pslist but shows it in tree/heiarchical format 
+
 volatility -f <memory file> --profile=<profile> netscan -> Shows active network connections at the time of memory file creation. I.e C2 server communications
 
 volatility -f <memory file> --profile=<profile> netscan | grep -vi closed -> Filter out any closed ports. We only see open/list etc. 
