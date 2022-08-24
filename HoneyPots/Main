@@ -1,0 +1,16 @@
+#----Classifications
+1) Low-Interaction - Little interactivity given to an adversary. Only given as much functionality as to simulate a service and capture those attacks against it. Unable to perform any post-exploitation against it as there's no real underlying OS simulation
+
+2) Medium Interactivity - Also includes emulating the underlying OS< shell and file systems. Gives attackers ability to perform some exploits and post-exploitation activity. 
+
+3) High interaction - Fully compelte systems, usually VMs, that include deliberate vulnerabilities. 
+
+
+#----Deployment
+Typically you want to deploy your honeypots outside the LAN, on the open internet. This allows them to be attacked far more often to gather more data
+
+
+#---Cowrie
+This is an SSH Honeypot used to log BF attacks and the shell interactions that an attacker performs. It has 2 modes. One is a medium interaction, where it can emulate a SSH Shell (ppl can login to it w/ ssh) and another is high interaction, where it functions as an SSH proxy to observe attacker behaviour on another system (?). Using Cowrie's logging capability, we can gather the most common passwords used by people logging into the system. 
+
+
