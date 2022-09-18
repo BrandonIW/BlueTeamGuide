@@ -16,10 +16,70 @@ Get-WinEvent (PowerShell cmdlet)
 
 Get-WinEvent -LogName Application | Where-Object { $_.ProviderName -Match 'WLMS' }   #remmeber w/ pwrshell "$_" refers to a placeholder/variable for the currently selected variable/log. The "." in $_. is basically the same as Python's methods. We want to select the "ProviderName" method in our variable (the line of log) and see if it matches WLMS. $_. you'll see in pipes and filtering. 
 
+Get-WinEvent -LogName Application | Where-Object { $_.ProviderName -Match 'VSS' }
+- Find logs associated w/ a specific source
+
+Get-WinEvent -LogName Security | Where-Object { $_.ID -Match '5379' }
+- Find logs with a specific event ID
+
+Get-WinEvent -LogName System | Where-Object { $_.LevelDisplayName -Match 'Error' } 
+- Find error messages in System log
+
+Get-WinEvent -LogName Application | Where-Object { $_.Message -Match 'FLAG' } 
+- Might be useful for finding flags in logs
+
+Get-WinEvent -Path C:\Windows\System32\winevt\Logs\System.evtx | Where-Object { $_.Message -Match 'driver' } 
+- Same as above, but searching a specific evtx file provided for a keyword in the “Message” aspect of the log
+
+Get-WinEvent -Path C:\Windows\System32\winevt\Logs\System.evtx | Where-Object { $_.Message -Match 'driver' -and $_.ID -Match 2 } 
+Conditional logic to match on multiple criteria 
+Can also use “-or” instead of “-and”
+
+Get-WinEvent -Path C:\Windows\System32\winevt\Logs\System.evtx | Where-Object { $_.MachineName -Match 'PC1' } 
+Filter by computer name 
+
+
+
+
+
+#---- Hash Table Filters
+
 Get-WinEvent -FilterHashtable @{
   LogName='Application'
   ProviderName='WLMS'
 }
+
+Filters for WLMS logs in the application log
+
+
+Get-WinEvent -FilterHashtable @{
+  Path='C:\Windows\System32\winevt\logs\System.evtx'
+  ProviderName='Microsoft-Windows-DNS-Client'
+  ID=’1014’
+  UserID='S-1-5-20’
+}
+Filters for ‘Microsoft-Windows-DNS-Client’ logs within a specified log, with a specific EventID and UserID
+
+Get-WinEvent -FilterHashtable @{
+  Path='C:\Windows\System32\winevt\logs\System.evtx'
+  ProviderName='Microsoft-Windows-DNS-Client'
+  ID=’1014’
+  UserID='S-1-5-20’
+  StartTime=$(Get-Date).AddHours(-1)
+}
+Same as above but filters for logs from the last 1 hour
+
+
+Get-WinEvent -FilterHashtable @{
+  Path='C:\Windows\System32\winevt\logs\System.evtx'
+  ProviderName='Microsoft-Windows-DNS-Client'
+  ID=’1014’
+  UserID='S-1-5-20’
+  StartTime=$(Get-Date -Year 2022 -Day 11 -Month 1)
+  EndTime=$(Get-Date -Year 2022 -Day 17 -Month 1)
+}
+Same as above but filters for lags between a time frame
+
 
 - The above code is the same as the one-liner, but more efficent. It's a hash table we're we can define key/value pairs like a dict in python. Additional Hashtable values include:
 LogName
@@ -37,6 +97,9 @@ Data
 Get-WinEvent -FilterHashtable @{
   LogName='Microsoft-Windows-PowerShell/Operational'
   ID=4104} | Select-Object -Property Message | Select-String -Pattern 'SecureString'
+  
+  
+  
   
   
 #----XPath Filtering
