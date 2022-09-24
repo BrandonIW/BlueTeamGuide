@@ -1,0 +1,16 @@
+#---OVERVIEW
+Shellbags collect information such as personalization regarding explorer options. i.e. when you resize the window, or change the thumbnails from small to large or detailed or w/e. Basically it's folder view settings. 
+
+#---FORESNIC VALUE
+A folder has been visited by the specific user account asscoiated with the UserClass.dat or NTUSER.dat file. Shellbag info is only created when the folder is initially viewed & subsequentally adjusted. 
+
+Shellbag information PERSISTS even if the folder is deleted. 
+
+#---LOCATION
+NTUSER.DAT\SOFTWARE\Microsoft\Windows\Shell\BagMRU --> Shows the directory tree of folders that have been accessed
+NTUSER.DAT\SOFTWARE\Microsoft\Windows\Shell\Bags --> This subkey stores the actualy customization data (windows size, layout type etc.)
+UsrClass.dat\Local Settings\Software\Microsoft\Windows\Shell\BagMRU
+UsrClass.dat\Local Settings\Software\Microsoft\Windows\Shell\Bags
+
+#---
+In a live system, UserClass.dat and NTUSER are logically unified under HKEY_CURRENT_USER. UserClass.dat specifically plugs into HKEY_CURRENT_USER\Software\Classes 
